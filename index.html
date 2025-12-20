@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Quiz ❤️</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* ❤️ Сердечки */
+  .heart {
+    position: absolute;
+    color: rgba(255, 77, 109, 0.4);
+    font-size: 20px;
+    animation: float 10s linear infinite;
+  }
+
+  @keyframes float {
+    from {
+      transform: translateY(100vh) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-10vh) scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  .quiz {
+    background: white;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 22px;
+    padding: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    text-align: center;
+    z-index: 10;
+  }
+
+  h1 {
+    color: #ff4d6d;
+  }
+
+  .question {
+    font-size: 18px;
+    margin: 20px 0;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #ffd6de;
+    font-size: 16px;
+    outline: none;
+  }
+
+  button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: #ff4d6d;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #ff2f55;
+  }
+
+  .error {
+    color: red;
+    margin-top: 10px;
+    display: none;
+  }
+
+  .result {
+    display: none;
+    font-size: 20px;
+    color: #ff4d6d;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="quiz">
+  <h1>Love Quiz 💖</h1>
+  <div class="question" id="question"></div>
+  <input type="text" id="answer" placeholder="Напиши ответ..." />
+  <button onclick="checkAnswer()">Ответить</button>
+  <div class="error" id="error">❌ Неправильно, попробуй ещё раз</div>
+
+  <div class="result" id="result">
+    ❤️❤️❤️<br><br>
+    Что-то странное спряталось в ответах!  
+    <br>🤨🧐🤨
+  </div>
+</div>
+
+<script>
+  const quiz = [
+    { q: "Как называют глупого человека которого легко наебать?", a: "лох" },
+    { q: "Где покупают лекарства?", a: "аптека" },
+    { q: "Как называют женщину благородного происхождения(французы)", a: "мадам" },
+    { q: "Какая самая слабая фигура в шахматах?", a: "пешка" },
+    { q: "Ты не служишь Богу на небесах, но ты мой", a: "ангелочек" }
+  ];
+
+  let index = 0;
+
+  const questionEl = document.getElementById("question");
+  const answerEl = document.getElementById("answer");
+  const errorEl = document.getElementById("error");
+  const resultEl = document.getElementById("result");
+
+  function showQuestion() {
+    questionEl.textContent = quiz[index].q;
+    answerEl.value = "";
+    errorEl.style.display = "none";
+  }
+
+  function checkAnswer() {
+    const userAnswer = answerEl.value.trim().toLowerCase();
+    const correct = quiz[index].a.toLowerCase();
+
+    if (userAnswer === correct) {
+      index++;
+      if (index < quiz.length) {
+        showQuestion();
+      } else {
+        questionEl.style.display = "none";
+        answerEl.style.display = "none";
+        document.querySelector("button").style.display = "none";
+        resultEl.style.display = "block";
+      }
+    } else {
+      errorEl.style.display = "block";
+    }
+  }
+
+  showQuestion();
+
+  // ❤️ Генерация сердечек
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 10000);
+  }, 400);
+</script>
+
+</body>
+</html>
