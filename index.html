@@ -1,170 +1,87 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Love Quiz ❤️</title>
+    <meta charset="UTF-8">
+    <title>Обратный отсчёт</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+        }
 
-<style>
-  body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    min-height: 100vh;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+        .container {
+            background: rgba(0, 0, 0, 0.35);
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+        }
 
-  /* ❤️ Сердечки */
-  .heart {
-    position: absolute;
-    color: rgba(255, 77, 109, 0.4);
-    font-size: 20px;
-    animation: float 10s linear infinite;
-  }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
 
-  @keyframes float {
-    from {
-      transform: translateY(100vh) scale(1);
-      opacity: 1;
-    }
-    to {
-      transform: translateY(-10vh) scale(1.5);
-      opacity: 0;
-    }
-  }
+        .timer {
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
 
-  .quiz {
-    background: white;
-    width: 90%;
-    max-width: 420px;
-    border-radius: 22px;
-    padding: 25px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-    text-align: center;
-    z-index: 10;
-  }
+        .timer span {
+            display: inline-block;
+            min-width: 70px;
+        }
 
-  h1 {
-    color: #ff4d6d;
-  }
-
-  .question {
-    font-size: 18px;
-    margin: 20px 0;
-  }
-
-  input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    border: 2px solid #ffd6de;
-    font-size: 16px;
-    outline: none;
-  }
-
-  button {
-    margin-top: 15px;
-    width: 100%;
-    padding: 12px;
-    border-radius: 14px;
-    border: none;
-    background: #ff4d6d;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #ff2f55;
-  }
-
-  .error {
-    color: red;
-    margin-top: 10px;
-    display: none;
-  }
-
-  .result {
-    display: none;
-    font-size: 20px;
-    color: #ff4d6d;
-  }
-</style>
+        .label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="quiz">
-  <h1>Love Quiz 💖</h1>
-  <div class="question" id="question"></div>
-  <input type="text" id="answer" placeholder="Напиши ответ..." />
-  <button onclick="checkAnswer()">Ответить</button>
-  <div class="error" id="error">❌ Неправильно, попробуй ещё раз</div>
-
-  <div class="result" id="result">
-    ❤️❤️❤️<br><br>
-    Что-то странное спряталось в ответах!  
-    <br>🤨🧐🤨
-  </div>
+<div class="container">
+    <h1>До 3 января осталось</h1>
+    <div class="timer">
+        <span id="days">00</span> <span class="label">дн</span>
+        <span id="hours">00</span> <span class="label">ч</span>
+        <span id="minutes">00</span> <span class="label">м</span>
+        <span id="seconds">00</span> <span class="label">с</span>
+    </div>
 </div>
 
 <script>
-  const quiz = [
-    { q: "Как называют глупого человека которого легко наебать?", a: "лох" },
-    { q: "Где покупают лекарства?", a: "аптека" },
-    { q: "Как называют женщину благородного происхождения(французы)", a: "мадам" },
-    { q: "Какая самая слабая фигура в шахматах?", a: "пешка" },
-    { q: "Ты не служишь Богу на небесах, но ты мой", a: "ангелочек" }
-  ];
+    function updateCountdown() {
+        // target date: 3 january (local time)
+        const targetDate = new Date(new Date().getFullYear(), 0, 3, 0, 0, 0);
+        const now = new Date();
+        const diff = targetDate - now;
 
-  let index = 0;
+        if (diff <= 0) {
+            document.querySelector(".timer").innerHTML = "🎉 3 января наступило!";
+            return;
+        }
 
-  const questionEl = document.getElementById("question");
-  const answerEl = document.getElementById("answer");
-  const errorEl = document.getElementById("error");
-  const resultEl = document.getElementById("result");
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
 
-  function showQuestion() {
-    questionEl.textContent = quiz[index].q;
-    answerEl.value = "";
-    errorEl.style.display = "none";
-  }
-
-  function checkAnswer() {
-    const userAnswer = answerEl.value.trim().toLowerCase();
-    const correct = quiz[index].a.toLowerCase();
-
-    if (userAnswer === correct) {
-      index++;
-      if (index < quiz.length) {
-        showQuestion();
-      } else {
-        questionEl.style.display = "none";
-        answerEl.style.display = "none";
-        document.querySelector("button").style.display = "none";
-        resultEl.style.display = "block";
-      }
-    } else {
-      errorEl.style.display = "block";
+        document.getElementById("days").textContent = days.toString().padStart(2, "0");
+        document.getElementById("hours").textContent = hours.toString().padStart(2, "0");
+        document.getElementById("minutes").textContent = minutes.toString().padStart(2, "0");
+        document.getElementById("seconds").textContent = seconds.toString().padStart(2, "0");
     }
-  }
 
-  showQuestion();
-
-  // ❤️ Генерация сердечек
-  setInterval(() => {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.textContent = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 10000);
-  }, 400);
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 </script>
 
 </body>
